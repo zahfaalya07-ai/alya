@@ -97,8 +97,8 @@ function say(text) {
 function setup() {
   if (supabase) return true;
 
-  if (SUPABASE_URL.includes('https://zhisthjnslksgcsqjauk.supabase.co') ||
-      SUPABASE_KEY.includes('sb_publishable_BKcIRGj3lYZ9KUpX8PHkOA_fZLe1aqz')) {
+  if (SUPABASE_URL.includes('MASUKKAN') ||
+      SUPABASE_KEY.includes('MASUKKAN')) {
     say('Supabase belum dikonfigurasi. Website sudah tampil, tetapi autentikasi belum aktif.');
     return false;
   }
@@ -212,8 +212,8 @@ $('logoutBtn').addEventListener('click', async () => {
   showLogin();
 });
 
-if (!SUPABASE_URL.includes('https://zhisthjnslksgcsqjauk.supabase.co') &&
-    !SUPABASE_KEY.includes('sb_publishable_BKcIRGj3lYZ9KUpX8PHkOA_fZLe1aqz')) {
+if (!SUPABASE_URL.includes('MASUKKAN') &&
+    !SUPABASE_KEY.includes('MASUKKAN')) {
   setup();
 
   const { data } = await supabase.auth.getSession();
