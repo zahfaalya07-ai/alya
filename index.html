@@ -191,7 +191,15 @@ $('authForm').addEventListener('submit', async e => {
       if (error) throw error;
 
       showDashboard(data.user);
-    }
+ const { data: result, error: fnError } =
+  await supabase.functions.invoke('secure-action', {
+    body: {}
+  });
+
+$('dashMessage').textContent = fnError
+  ? 'Gagal: ' + fnError.message
+  : 'Berhasil: ' + result.message;
+      
   } catch (err) {
     say(err.message || 'Terjadi kesalahan. Coba lagi.');
   } finally {
