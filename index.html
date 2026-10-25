@@ -81,14 +81,19 @@ Tampilan siap. Supabase belum dihubungkan, jadi login/register belum aktif.
 
 <script type="module">
 import { createClient } from
-'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+  'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-// Ganti dengan URL project dan publishable key Supabase.
-const SUPABASE_URL = 'https://zhisthjnslksgcsqjauk.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_BKcIRGj3lYZ9KUpX8PHkOA_fZLe1aqz';
+const SUPABASE_URL =
+  'https://zhisthjnslksgcsqjauk.supabase.co';
+
+const SUPABASE_KEY =
+  'sb_publishable_BKcIRGj3lYZ9KUpX8PHkOA_fZLe1aqz';
 
 const $ = id => document.getElementById(id);
-let mode = 'login', supabase = null, busy = false;
+
+let mode = 'login';
+let supabase = null;
+let busy = false;
 
 function say(text) {
   $('message').textContent = text;
@@ -97,17 +102,17 @@ function say(text) {
 function setup() {
   if (supabase) return true;
 
-  if (SUPABASE_URL.includes('MASUKKAN') ||
-      SUPABASE_KEY.includes('MASUKKAN')) {
-    say('Supabase belum dikonfigurasi. Website sudah tampil, tetapi autentikasi belum aktif.');
+  if (!SUPABASE_URL.startsWith('https://') ||
+      !SUPABASE_KEY.startsWith('sb_publishable_')) {
+    say('Periksa URL dan publishable key Supabase.');
     return false;
   }
 
   try {
     supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
     return true;
-  } catch {
-    say('URL atau publishable key Supabase tidak valid.');
+  } catch (err) {
+    say('Gagal membuat koneksi Supabase: ' + err.message);
     return false;
   }
 }
@@ -167,39 +172,44 @@ $('authForm').addEventListener('submit', async e => {
     const password = $('password').value;
 
     if (mode === 'register') {
+      const fullName = $('name').value.trim();
+
+      if (!fullName) {
+        throw new Error('Nama lengkap wajib diisi.');
+      }
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          data: { full_name: $('name').value.trim() }
+          data: { full_name: fullName }
         }
       });
 
       if (error) throw error;
 
-      if (data.session) {
+      if (data.session && data.user) {
         showDashboard(data.user);
+        $('dashMessage').textContent =
+          'Pendaftaran dan login berhasil.';
       } else {
-        say('Pendaftaran berhasil. Periksa email untuk konfirmasi, lalu login.');
+        say(
+          'Pendaftaran berhasil. Periksa email untuk konfirmasi, ' +
+          'kemudian login.'
+        );
       }
     } else {
       const { data, error } =
         await supabase.auth.signInWithPassword({
-          email, password
+          email,
+          password
         });
 
-      if (error) throw error; 
+      if (error) throw error;
 
       showDashboard(data.user);
- const { data: result, error: fnError } =
-  await supabase.functions.invoke('secure-action', {
-    body: {}
-  });
-
-$('dashMessage').textContent = fnError
-  ? 'Gagal: ' + fnError.message
-  : 'Berhasil: ' + result.message;
-      
+      $('dashMessage').textContent = 'Login berhasil.';
+    }
   } catch (err) {
     say(err.message || 'Terjadi kesalahan. Coba lagi.');
   } finally {
@@ -209,25 +219,47 @@ $('dashMessage').textContent = fnError
 });
 
 $('logoutBtn').addEventListener('click', async () => {
-  if (!setup()) return;
+  if (!setup() || busy) return;
 
-  const { error } = await supabase.auth.signOut();
+  busy = true;
+  $('logoutBtn').disabled = true;
 
-  $('dashMessage').textContent = error
-    ? 'Logout gagal: ' + error.message
-    : 'Berhasil logout.';
+  try {
+    const { error } = await supabase.auth.signOut();
 
-  showLogin();
+    if (error) throw error;
+
+    showLogin();
+    say('Berhasil logout.');
+  } catch (err) {
+    $('dashMessage').textContent =
+      'Logout gagal: ' + err.message;
+  } finally {
+    busy = false;
+    $('logoutBtn').disabled = false;
+  }
 });
 
-if (!SUPABASE_URL.includes('MASUKKAN') &&
-    !SUPABASE_KEY.includes('MASUKKAN')) {
-  setup();
+async function initialize() {
+  if (!setup()) return;
 
-  const { data } = await supabase.auth.getSession();
+  try {
+    const { data, error } = await supabase.auth.getSession();
 
-  if (data.session) showDashboard(data.session.user);
+    if (error) throw error;
+
+    if (data.session) {
+      showDashboard(data.session.user);
+    } else {
+      showLogin();
+      say('Supabase siap. Silakan login atau register.');
+    }
+  } catch (err) {
+    say('Gagal memeriksa sesi: ' + err.message);
+  }
 }
+
+initialize();
 </script>
 </body>
 </html>
