@@ -497,81 +497,78 @@ async function loadAdminOrders() {
       const statusLabel = document.createElement('label');
       statusLabel.textContent = 'Status pesanan';
 
-      const statusSelect = document.createElement('select');
+     
+const statusLabel = document.createElement('p');
+statusLabel.textContent = 'Status saat ini: ' + order.status;
+statusLabel.className = 'pill';
 
-      const statuses = [
-        'Menunggu konfirmasi',
-        'Dikonfirmasi',
-        'Sedang dibuat',
-        'Siap diambil/diantar',
-        'Selesai',
-        'Dibatalkan'
-      ];
+const actionArea = document.createElement('div');
+actionArea.style.display = 'flex';
+actionArea.style.flexWrap = 'wrap';
+actionArea.style.gap = '8px';
+actionArea.style.marginTop = '12px';
 
-      statuses.forEach(status => {
-        const option = document.createElement('option');
-        option.value = status;
-        option.textContent = status;
-        statusSelect.append(option);
-      });
+const feedback = document.createElement('p');
+feedback.className = 'message';
+feedback.setAttribute('role', 'status');
 
-      // Pertahankan status saat ini jika nilainya belum ada di daftar.
-      if (
-        order.status &&
-        !statuses.includes(order.status)
-      ) {
-        const option = document.createElement('option');
-        option.value = order.status;
-        option.textContent = order.status;
-        statusSelect.append(option);
-      }
+async function updateOrderStatus(newStatus, button) {
+  button.disabled = true;
+  feedback.textContent = 'Menyimpan status...';
 
-      statusSelect.value = order.status || statuses[0];
+  try {
+    const { data: isAdmin, error: adminError } =
+      await supabase.rpc('is_bakery_admin');
 
-      const saveButton = document.createElement('button');
-      saveButton.type = 'button';
-      saveButton.textContent = 'Simpan Status';
-      saveButton.style.marginTop = '10px';
+    if (adminError) throw adminError;
+    if (isAdmin !== true) {
+      throw new Error('Akses admin tidak diizinkan.');
+    }
 
-      const feedback = document.createElement('p');
-      feedback.className = 'message';
-      feedback.setAttribute('role', 'status');
+    const { data: updatedRows, error: updateError } = await supabase
+      .from('bakery_orders')
+      .update({ status: newStatus })
+      .eq('id', order.id)
+      .select('id');
 
-      saveButton.addEventListener('click', async () => {
-        saveButton.disabled = true;
-        feedback.textContent = 'Menyimpan status...';
+    if (updateError) throw updateError;
+    if (!updatedRows || updatedRows.length === 0) {
+      throw new Error(
+        'Pesanan tidak berubah. Periksa policy UPDATE RLS admin.'
+      );
+    }
 
-        try {
-          // Pastikan pengguna masih login dan tetap terdaftar sebagai admin.
-          const { data: isAdmin, error: adminError } =
-            await supabase.rpc('is_bakery_admin');
+    feedback.textContent = 'Status berhasil menjadi: ' + newStatus;
+    await loadOrders();
+    await loadAdminOrders();
+  } catch (error) {
+    feedback.textContent = 'Gagal: ' + error.message;
+  } finally {
+    button.disabled = false;
+  }
+}
 
-          if (adminError) throw adminError;
-          if (isAdmin !== true) {
-            throw new Error('Akses admin tidak diizinkan.');
-          }
+const actions = [
+  { label: '✓ Konfirmasi', status: 'Dikonfirmasi' },
+  { label: '🍰 Sedang dibuat', status: 'Sedang dibuat' },
+  { label: '📦 Siap diambil/diantar', status: 'Siap diambil/diantar' },
+  { label: '✓ Selesai', status: 'Selesai' },
+  { label: '✕ Tolak pesanan', status: 'Dibatalkan' }
+];
 
-          const { error: updateError } = await supabase
-            .from('bakery_orders')
-            .update({ status: statusSelect.value })
-            .eq('id', order.id);
+for (const action of actions) {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.textContent = action.label;
+  button.addEventListener('click', () => {
+    updateOrderStatus(action.status, button);
+  });
+  actionArea.append(button);
+}
 
-          if (updateError) throw updateError;
+card.append(statusLabel, actionArea, feedback);
+list.append(card);
 
-          feedback.textContent = 'Status berhasil diperbarui.';
-          await loadOrders();
-        } catch (error) {
-          feedback.textContent =
-            'Gagal memperbarui status: ' + error.message;
-        } finally {
-          saveButton.disabled = false;
-        }
-      });
-
-      card.append(title, details, delivery, statusLabel,
-                  statusSelect, saveButton, feedback);
-
-      list.append(card);
     }
 
     setMessage('adminMessage', 'Daftar pesanan berhasil dimuat.');
