@@ -146,7 +146,20 @@ footer{text-align:center;padding:20px;color:#806c62;font-size:12px}
         Muat ulang pesanan
       </button>
       <div id="ordersList" class="muted">Memuat riwayat...</div>
-    </div>
+
+</div>
+
+<div class="card hidden" id="adminPanel">
+  <h2>🔐 Dashboard Admin</h2>
+  <p class="muted">Kelola pesanan pelanggan Honey's Bakery.</p>
+  <button class="secondary" id="adminRefresh" type="button">
+    Muat ulang pesanan
+  </button>
+  <div id="adminOrders" class="muted">
+    Memuat pesanan...
+  </div>
+  <p id="adminMessage" class="message" role="status"></p>
+</div>
 
     <div class="card">
       <button class="full" id="logoutBtn" type="button">Logout</button>
@@ -207,6 +220,7 @@ function updatePrice() {
 
 function showShop(user) {
   currentUser = user;
+  checkAdmin();
   $('auth').classList.add('hidden');
   $('shop').classList.remove('hidden');
   $('userEmail').textContent = user.email || '';
@@ -215,7 +229,28 @@ function showShop(user) {
   updatePrice();
   loadOrders();
 }
+async function checkAdmin() {
+  const panel = $('adminPanel');
+  if (!panel || !currentUser) return;
 
+  panel.classList.add('hidden');
+
+  try {
+    const { data, error } = await supabase.rpc('is_bakery_admin');
+
+    if (error) throw error;
+
+    if (data === true) {
+      panel.classList.remove('hidden');
+      $('adminMessage').textContent = 'Akses admin terverifikasi.';
+      await loadAdminOrders();
+    }
+  } catch (error) {
+    console.error('Pemeriksaan admin gagal:', error);
+    $('adminMessage').textContent =
+      'Pemeriksaan admin gagal. Periksa fungsi Supabase.';
+  }
+}
 function showAuth() {
   currentUser = null;
   $('shop').classList.add('hidden');
@@ -412,6 +447,140 @@ async function loadOrders() {
     $('ordersList').append(item);
   }
 }
+
+async function loadAdminOrders() {
+  if (!currentUser) return;
+
+  const list = $('adminOrders');
+  list.textContent = 'Memuat pesanan pelanggan...';
+
+  try {
+    const { data, error } = await supabase
+      .from('bakery_orders')
+      .select(
+        'id, user_id, customer_name, whatsapp, address, cake_name, cake_size, quantity, total_price, order_date, delivery_method, status, notes, created_at'
+      )
+      .order('created_at', { ascending: false })
+      .limit(100);
+
+    if (error) throw error;
+
+    list.replaceChildren();
+
+    if (!data || data.length === 0) {
+      list.textContent = 'Belum ada pesanan pelanggan.';
+      return;
+    }
+
+    for (const order of data) {
+      const card = document.createElement('div');
+      card.className = 'order';
+
+      const title = document.createElement('h3');
+      title.textContent =
+        order.cake_name + ' (' + order.cake_size + ')';
+
+      const details = document.createElement('p');
+      details.textContent =
+        'Pemesan: ' + (order.customer_name || '-') +
+        ' | WhatsApp: ' + (order.whatsapp || '-') +
+        ' | Jumlah: ' + order.quantity +
+        ' | Total: ' + rupiah(order.total_price);
+
+      const delivery = document.createElement('p');
+      delivery.textContent =
+        'Tanggal: ' + order.order_date +
+        ' | Metode: ' + order.delivery_method +
+        (order.address ? ' | Alamat: ' + order.address : '') +
+        (order.notes ? ' | Catatan: ' + order.notes : '');
+
+      const statusLabel = document.createElement('label');
+      statusLabel.textContent = 'Status pesanan';
+
+      const statusSelect = document.createElement('select');
+
+      const statuses = [
+        'Menunggu konfirmasi',
+        'Dikonfirmasi',
+        'Sedang dibuat',
+        'Siap diambil/diantar',
+        'Selesai',
+        'Dibatalkan'
+      ];
+
+      statuses.forEach(status => {
+        const option = document.createElement('option');
+        option.value = status;
+        option.textContent = status;
+        statusSelect.append(option);
+      });
+
+      // Pertahankan status saat ini jika nilainya belum ada di daftar.
+      if (
+        order.status &&
+        !statuses.includes(order.status)
+      ) {
+        const option = document.createElement('option');
+        option.value = order.status;
+        option.textContent = order.status;
+        statusSelect.append(option);
+      }
+
+      statusSelect.value = order.status || statuses[0];
+
+      const saveButton = document.createElement('button');
+      saveButton.type = 'button';
+      saveButton.textContent = 'Simpan Status';
+      saveButton.style.marginTop = '10px';
+
+      const feedback = document.createElement('p');
+      feedback.className = 'message';
+      feedback.setAttribute('role', 'status');
+
+      saveButton.addEventListener('click', async () => {
+        saveButton.disabled = true;
+        feedback.textContent = 'Menyimpan status...';
+
+        try {
+          // Pastikan pengguna masih login dan tetap terdaftar sebagai admin.
+          const { data: isAdmin, error: adminError } =
+            await supabase.rpc('is_bakery_admin');
+
+          if (adminError) throw adminError;
+          if (isAdmin !== true) {
+            throw new Error('Akses admin tidak diizinkan.');
+          }
+
+          const { error: updateError } = await supabase
+            .from('bakery_orders')
+            .update({ status: statusSelect.value })
+            .eq('id', order.id);
+
+          if (updateError) throw updateError;
+
+          feedback.textContent = 'Status berhasil diperbarui.';
+          await loadOrders();
+        } catch (error) {
+          feedback.textContent =
+            'Gagal memperbarui status: ' + error.message;
+        } finally {
+          saveButton.disabled = false;
+        }
+      });
+
+      card.append(title, details, delivery, statusLabel,
+                  statusSelect, saveButton, feedback);
+
+      list.append(card);
+    }
+
+    setMessage('adminMessage', 'Daftar pesanan berhasil dimuat.');
+  } catch (error) {
+    list.textContent = 'Gagal memuat pesanan: ' + error.message;
+  }
+}
+
+$('adminRefresh').addEventListener('click', loadAdminOrders);
 
 $('refreshBtn').addEventListener('click', loadOrders);
 
