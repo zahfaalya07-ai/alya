@@ -65,7 +65,7 @@ footer{text-align:center;padding:20px;color:#806c62;font-size:12px}
       Belum punya akun? Register
     </button>
     <p class="message" id="message" role="status" aria-live="polite">
-      Menghubungkan ke Supabase...
+      memuat website...
     </p>
   </section>
 
@@ -493,9 +493,6 @@ async function loadAdminOrders() {
         ' | Metode: ' + order.delivery_method +
         (order.address ? ' | Alamat: ' + order.address : '') +
         (order.notes ? ' | Catatan: ' + order.notes : '');
-
-      const statusLabel = document.createElement('label');
-      statusLabel.textContent = 'Status pesanan';
 
      
 const statusLabel = document.createElement('p');
