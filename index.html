@@ -473,6 +473,8 @@ async function loadAdminOrders() {
     }
 
     for (const order of data) {
+      if (order.status === 'Selesai') continue;
+      
       const card = document.createElement('div');
       card.className = 'order';
 
