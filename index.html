@@ -3,134 +3,226 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SecureClass | Portal Mahasiswa</title>
+<title>Honey's Bakery | Toko Kue Online</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;background:#0b1120;color:#f8fafc;font-family:Arial,sans-serif}
-.container{width:100%;max-width:430px}
-.logo{text-align:center;margin-bottom:24px}
-.icon{display:inline-grid;place-items:center;width:64px;height:64px;border-radius:18px;background:#2563eb;font-size:30px;margin-bottom:12px}
-.logo h1{margin:0;font-size:28px}
-.logo h1 span{color:#60a5fa}
-.logo p,.subtitle{color:#94a3b8;font-size:14px}
-.card{background:#172033;border:1px solid #29364d;padding:25px;border-radius:18px}
-.card h2{margin:0 0 8px}
-label{display:block;margin:15px 0 8px;font-size:13px}
-input{width:100%;padding:13px;border-radius:9px;border:1px solid #475569;background:#0f172a;color:white;font-size:15px}
-button{width:100%;padding:13px;margin-top:17px;border:0;border-radius:9px;background:#2563eb;color:white;font-weight:bold;font-size:15px}
-button:disabled{opacity:.6}
-.secondary{margin-top:10px;background:transparent;border:1px solid #475569}
-.message{font-size:13px;line-height:1.5;color:#cbd5e1;overflow-wrap:anywhere;margin-top:14px}
-#dashboard{display:none}
-.info{padding:15px;margin-top:15px;background:#0f172a;border-radius:9px;line-height:1.8;font-size:14px}
-footer{text-align:center;color:#64748b;font-size:12px;margin-top:20px}
+body{margin:0;background:#fff8f0;color:#402b25;font-family:Arial,sans-serif}
+button,input,select,textarea{font:inherit}
+header{background:#6f3d2e;color:white;padding:22px 16px;text-align:center}
+header h1{margin:0;font-size:29px}
+header p{margin:8px 0 0;color:#ffe4d1}
+main{max-width:850px;margin:25px auto;padding:0 15px}
+.card{background:white;border:1px solid #f0d9ca;border-radius:16px;padding:22px;margin-bottom:20px;box-shadow:0 4px 14px #63321b0b}
+h2{margin-top:0}
+label{display:block;font-size:14px;font-weight:bold;margin:14px 0 7px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #d8b9a7;border-radius:9px;background:white;color:#402b25}
+textarea{min-height:75px;resize:vertical}
+button{padding:12px 16px;border:0;border-radius:9px;background:#8b4a32;color:white;font-weight:bold;cursor:pointer}
+button:disabled{opacity:.6;cursor:wait}
+.secondary{background:#f2e4db;color:#603626}
+.full{width:100%;margin-top:16px}
+.hidden{display:none!important}
+.muted{color:#806c62;font-size:14px;line-height:1.5}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.price{padding:13px;background:#fff3e9;border-radius:10px;margin:14px 0;line-height:1.8}
+.message{font-size:14px;line-height:1.5;overflow-wrap:anywhere}
+.order{border:1px solid #ecd7c9;border-radius:10px;padding:14px;margin-top:12px;line-height:1.7}
+.pill{display:inline-block;background:#f7e4d6;padding:4px 8px;border-radius:20px;font-size:12px}
+footer{text-align:center;padding:20px;color:#806c62;font-size:12px}
+@media(max-width:520px){.grid{grid-template-columns:1fr}.card{padding:17px}}
 </style>
 </head>
 <body>
-<main class="container">
-<header class="logo">
-<div class="icon">🛡️</div>
-<h1>Secure<span>Class</span></h1>
-<p>Sistem Informasi Kelas Mahasiswa</p>
+<header>
+  <h1>🍰 Honey's Bakery</h1>
+  <p>Kue manis untuk momen spesialmu</p>
 </header>
 
-<section class="card" id="auth">
-<h2 id="formTitle">Selamat Datang</h2>
-<p class="subtitle" id="formDesc">Masuk untuk mengakses portal kelas.</p>
+<main>
+  <section class="card" id="auth">
+    <h2 id="formTitle">Selamat Datang</h2>
+    <p class="muted" id="formDesc">Login untuk memesan kue favoritmu.</p>
 
-<form id="authForm">
-<div id="nameField" hidden>
-<label for="name">Nama lengkap</label>
-<input id="name" maxlength="100" autocomplete="name">
-</div>
+    <form id="authForm">
+      <div id="nameField" class="hidden">
+        <label for="name">Nama lengkap</label>
+        <input id="name" maxlength="100" autocomplete="name">
+      </div>
 
-<label for="email">Email</label>
-<input id="email" type="email" required maxlength="254"
-autocomplete="email" placeholder="nama@email.com">
+      <label for="email">Email</label>
+      <input id="email" type="email" required maxlength="254"
+        autocomplete="email" placeholder="nama@email.com">
 
-<label for="password">Password</label>
-<input id="password" type="password" required minlength="8"
-maxlength="128" autocomplete="current-password"
-placeholder="Minimal 8 karakter">
+      <label for="password">Password</label>
+      <input id="password" type="password" required minlength="8"
+        maxlength="128" autocomplete="current-password"
+        placeholder="Minimal 8 karakter">
 
-<button id="submitBtn" type="submit">Login</button>
-</form>
+      <button class="full" id="submitBtn" type="submit">Login</button>
+    </form>
 
-<button class="secondary" id="switchBtn" type="button">
-Belum punya akun? Register
-</button>
+    <button class="secondary full" id="switchBtn" type="button">
+      Belum punya akun? Register
+    </button>
+    <p class="message" id="message" role="status" aria-live="polite">
+      Menghubungkan ke Supabase...
+    </p>
+  </section>
 
-<p class="message" id="message" role="status" aria-live="polite">
-Tampilan siap. Supabase belum dihubungkan, jadi login/register belum aktif.
-</p>
-</section>
+  <section id="shop" class="hidden">
+    <div class="card">
+      <p class="muted">Akun: <b id="userEmail"></b></p>
+      <h2>Menu Kue 🍰</h2>
+      <p class="muted">Pilih kue, ukuran, dan jumlah pesananmu.</p>
 
-<section class="card" id="dashboard">
-<h2>Dashboard Mahasiswa</h2>
-<p class="subtitle">Autentikasi berhasil.</p>
-<div class="info">
-<b>Email akun</b>
-<div id="userEmail"></div>
-</div>
-<button id="logoutBtn" type="button">Logout</button>
-<p id="dashMessage" class="message"></p>
-</section>
+      <form id="orderForm">
+        <label for="cake">Pilih kue</label>
+        <select id="cake" required>
+          <option value="Birthday Cake">Birthday Cake</option>
+          <option value="Chocolate Cake">Chocolate Cake</option>
+          <option value="Cheese Cake">Cheese Cake</option>
+          <option value="Red Velvet">Red Velvet</option>
+          <option value="Brownies">Brownies</option>
+        </select>
 
-<footer>SecureClass © 2026 · Proyek pembelajaran keamanan web</footer>
+        <div class="grid">
+          <div>
+            <label for="size">Ukuran</label>
+            <select id="size" required>
+              <option value="Small">Small</option>
+              <option value="Medium">Medium</option>
+              <option value="Large">Large</option>
+            </select>
+          </div>
+          <div>
+            <label for="quantity">Jumlah</label>
+            <input id="quantity" type="number" min="1" max="20"
+              value="1" required>
+          </div>
+        </div>
+
+        <div class="price">
+          <div>Harga satuan: <b id="unitPrice">Rp50.000</b></div>
+          <div>Total: <b id="totalPrice">Rp50.000</b></div>
+        </div>
+
+        <label for="customerName">Nama pemesan</label>
+        <input id="customerName" maxlength="100" required
+          autocomplete="name" placeholder="Nama penerima pesanan">
+
+        <label for="whatsapp">Nomor WhatsApp</label>
+        <input id="whatsapp" type="tel" maxlength="20" required
+          placeholder="Contoh: 081234567890">
+
+        <label for="orderDate">Tanggal pengambilan/pengiriman</label>
+        <input id="orderDate" type="date" required>
+
+        <label for="delivery">Metode penerimaan</label>
+        <select id="delivery" required>
+          <option value="Ambil sendiri">Ambil sendiri</option>
+          <option value="Diantar">Diantar</option>
+        </select>
+
+        <div id="addressField" class="hidden">
+          <label for="address">Alamat pengiriman</label>
+          <textarea id="address" maxlength="500"
+            placeholder="Alamat lengkap penerima"></textarea>
+        </div>
+
+        <label for="notes">Catatan kue (opsional)</label>
+        <textarea id="notes" maxlength="500"
+          placeholder="Contoh: tulisan Selamat Ulang Tahun Alya, warna pink"></textarea>
+
+        <button class="full" id="orderBtn" type="submit">
+          Simpan Pesanan
+        </button>
+      </form>
+      <p class="message" id="orderMessage" role="status" aria-live="polite"></p>
+    </div>
+
+    <div class="card">
+      <h2>📋 Riwayat Pesanan</h2>
+      <button class="secondary" id="refreshBtn" type="button">
+        Muat ulang pesanan
+      </button>
+      <div id="ordersList" class="muted">Memuat riwayat...</div>
+    </div>
+
+    <div class="card">
+      <button class="full" id="logoutBtn" type="button">Logout</button>
+      <p class="muted">Honey's Bakery · Pesanan online</p>
+    </div>
+  </section>
 </main>
+
+<footer>Honey's Bakery © 2026</footer>
 
 <script type="module">
 import { createClient } from
   'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-const SUPABASE_URL =
-  'https://zhisthjnslksgcsqjauk.supabase.co';
+const SUPABASE_URL = 'https://zhisthjnslksgcsqjauk.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_BKcIRGj3lYZ9KUpX8PHkOA_fZLe1aqz';
 
-const SUPABASE_KEY =
-  'sb_publishable_BKcIRGj3lYZ9KUpX8PHkOA_fZLe1aqz';
-
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 const $ = id => document.getElementById(id);
 
 let mode = 'login';
-let supabase = null;
 let busy = false;
+let currentUser = null;
 
-function say(text) {
-  $('message').textContent = text;
+const prices = {
+  'Birthday Cake': {Small:50000, Medium:85000, Large:130000},
+  'Chocolate Cake': {Small:45000, Medium:80000, Large:120000},
+  'Cheese Cake': {Small:55000, Medium:90000, Large:140000},
+  'Red Velvet': {Small:55000, Medium:95000, Large:145000},
+  'Brownies': {Small:30000, Medium:50000, Large:75000}
+};
+
+function rupiah(n) {
+  return new Intl.NumberFormat('id-ID', {
+    style:'currency', currency:'IDR', maximumFractionDigits:0
+  }).format(n);
 }
 
-function setup() {
-  if (supabase) return true;
-
-  if (!SUPABASE_URL.startsWith('https://') ||
-      !SUPABASE_KEY.startsWith('sb_publishable_')) {
-    say('Periksa URL dan publishable key Supabase.');
-    return false;
-  }
-
-  try {
-    supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-    return true;
-  } catch (err) {
-    say('Gagal membuat koneksi Supabase: ' + err.message);
-    return false;
-  }
+function setMessage(id, text) {
+  $(id).textContent = text;
 }
 
-function showDashboard(user) {
-  $('auth').style.display = 'none';
-  $('dashboard').style.display = 'block';
+function setTodayMinimum() {
+  const today = new Date();
+  const localDate = new Date(
+    today.getTime() - today.getTimezoneOffset() * 60000
+  ).toISOString().slice(0,10);
+  $('orderDate').min = localDate;
+  if (!$('orderDate').value) $('orderDate').value = localDate;
+}
+
+function updatePrice() {
+  const unit = prices[$('cake').value][$('size').value];
+  const quantity = Math.max(1, Math.min(20, Number($('quantity').value) || 1));
+  $('unitPrice').textContent = rupiah(unit);
+  $('totalPrice').textContent = rupiah(unit * quantity);
+}
+
+function showShop(user) {
+  currentUser = user;
+  $('auth').classList.add('hidden');
+  $('shop').classList.remove('hidden');
   $('userEmail').textContent = user.email || '';
+  $('customerName').value = user.user_metadata?.full_name || '';
+  setTodayMinimum();
+  updatePrice();
+  loadOrders();
 }
 
-function showLogin() {
-  $('dashboard').style.display = 'none';
-  $('auth').style.display = 'block';
+function showAuth() {
+  currentUser = null;
+  $('shop').classList.add('hidden');
+  $('auth').classList.remove('hidden');
 }
 
 $('switchBtn').addEventListener('click', () => {
-  if (busy) return;
-
   mode = mode === 'login' ? 'register' : 'login';
 
   $('formTitle').textContent =
@@ -138,34 +230,26 @@ $('switchBtn').addEventListener('click', () => {
 
   $('formDesc').textContent =
     mode === 'login'
-      ? 'Masuk untuk mengakses portal kelas.'
-      : 'Daftarkan akun SecureClass.';
+      ? 'Login untuk memesan kue favoritmu.'
+      : 'Daftarkan akun Honey’s Bakery.';
 
-  $('nameField').hidden = mode !== 'register';
+  $('nameField').classList.toggle('hidden', mode !== 'register');
   $('name').required = mode === 'register';
-
   $('password').autocomplete =
     mode === 'login' ? 'current-password' : 'new-password';
-
-  $('submitBtn').textContent =
-    mode === 'login' ? 'Login' : 'Register';
-
+  $('submitBtn').textContent = mode === 'login' ? 'Login' : 'Register';
   $('switchBtn').textContent =
-    mode === 'login'
-      ? 'Belum punya akun? Register'
-      : 'Sudah punya akun? Login';
-
-  say('');
+    mode === 'login' ? 'Belum punya akun? Register' : 'Sudah punya akun? Login';
+  setMessage('message', '');
 });
 
-$('authForm').addEventListener('submit', async e => {
-  e.preventDefault();
-
-  if (busy || !setup()) return;
+$('authForm').addEventListener('submit', async event => {
+  event.preventDefault();
+  if (busy) return;
 
   busy = true;
   $('submitBtn').disabled = true;
-  say('Memproses...');
+  setMessage('message', 'Memproses...');
 
   try {
     const email = $('email').value.trim();
@@ -173,89 +257,196 @@ $('authForm').addEventListener('submit', async e => {
 
     if (mode === 'register') {
       const fullName = $('name').value.trim();
+      if (!fullName) throw new Error('Nama lengkap wajib diisi.');
 
-      if (!fullName) {
-        throw new Error('Nama lengkap wajib diisi.');
-      }
-
-      const { data, error } = await supabase.auth.signUp({
+      const {data, error} = await supabase.auth.signUp({
         email,
         password,
-        options: {
-          data: { full_name: fullName }
-        }
+        options: {data:{full_name:fullName}}
       });
-
       if (error) throw error;
 
       if (data.session && data.user) {
-        showDashboard(data.user);
-        $('dashMessage').textContent =
-          'Pendaftaran dan login berhasil.';
+        showShop(data.user);
       } else {
-        say(
-          'Pendaftaran berhasil. Periksa email untuk konfirmasi, ' +
-          'kemudian login.'
-        );
+        setMessage('message',
+          'Pendaftaran berhasil. Periksa email untuk konfirmasi, lalu login.');
       }
     } else {
-      const { data, error } =
-        await supabase.auth.signInWithPassword({
-          email,
-          password
-        });
-
+      const {data, error} = await supabase.auth.signInWithPassword({
+        email, password
+      });
       if (error) throw error;
-
-      showDashboard(data.user);
-      $('dashMessage').textContent = 'Login berhasil.';
+      showShop(data.user);
     }
-  } catch (err) {
-    say(err.message || 'Terjadi kesalahan. Coba lagi.');
+  } catch (error) {
+    setMessage('message', error.message || 'Terjadi kesalahan.');
   } finally {
     busy = false;
     $('submitBtn').disabled = false;
   }
 });
 
-$('logoutBtn').addEventListener('click', async () => {
-  if (!setup() || busy) return;
+$('cake').addEventListener('change', updatePrice);
+$('size').addEventListener('change', updatePrice);
+$('quantity').addEventListener('input', updatePrice);
+
+$('delivery').addEventListener('change', () => {
+  const delivery = $('delivery').value === 'Diantar';
+  $('addressField').classList.toggle('hidden', !delivery);
+  $('address').required = delivery;
+});
+
+$('orderForm').addEventListener('submit', async event => {
+  event.preventDefault();
+  if (busy || !currentUser) return;
 
   busy = true;
-  $('logoutBtn').disabled = true;
+  $('orderBtn').disabled = true;
+  setMessage('orderMessage', 'Menyimpan pesanan...');
 
   try {
-    const { error } = await supabase.auth.signOut();
+    const cake = $('cake').value;
+    const size = $('size').value;
+    const quantity = Number($('quantity').value);
+    const unitPrice = prices[cake][size];
+    const totalPrice = unitPrice * quantity;
+    const delivery = $('delivery').value;
+    const address = $('address').value.trim();
 
+    if (!Number.isInteger(quantity) || quantity < 1 || quantity > 20) {
+      throw new Error('Jumlah kue harus antara 1 sampai 20.');
+    }
+
+    if ($('orderDate').value < $('orderDate').min) {
+      throw new Error('Tanggal pesanan tidak boleh di masa lalu.');
+    }
+
+    if (delivery === 'Diantar' && !address) {
+      throw new Error('Alamat wajib diisi untuk pesanan antar.');
+    }
+
+    const order = {
+      user_id: currentUser.id,
+      cake_name: cake,
+      cake_size: size,
+      quantity,
+      unit_price: unitPrice,
+      total_price: totalPrice,
+      customer_name: $('customerName').value.trim(),
+      whatsapp: $('whatsapp').value.trim(),
+      order_date: $('orderDate').value,
+      delivery_method: delivery,
+      address: delivery === 'Diantar' ? address : null,
+      notes: $('notes').value.trim()
+    };
+
+    const {error} = await supabase.from('bakery_orders').insert(order);
     if (error) throw error;
 
-    showLogin();
-    say('Berhasil logout.');
-  } catch (err) {
-    $('dashMessage').textContent =
-      'Logout gagal: ' + err.message;
+    setMessage('orderMessage',
+      'Pesanan berhasil disimpan! Hubungi penjual untuk konfirmasi pembayaran dan pesanan.');
+    $('notes').value = '';
+    await loadOrders();
+  } catch (error) {
+    setMessage('orderMessage',
+      'Pesanan belum tersimpan: ' + (error.message || 'Terjadi kesalahan.'));
   } finally {
     busy = false;
+    $('orderBtn').disabled = false;
+  }
+});
+
+async function loadOrders() {
+  if (!currentUser) return;
+  $('ordersList').textContent = 'Memuat riwayat...';
+
+  const {data, error} = await supabase
+    .from('bakery_orders')
+    .select('id, cake_name, cake_size, quantity, total_price, order_date, delivery_method, status, notes, created_at')
+    .order('created_at', {ascending:false})
+    .limit(30);
+
+  if (error) {
+    $('ordersList').textContent =
+      'Gagal memuat pesanan. Pastikan tabel dan RLS Supabase sudah dibuat. ' +
+      error.message;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    $('ordersList').textContent = 'Belum ada pesanan.';
+    return;
+  }
+
+  $('ordersList').replaceChildren();
+
+  for (const order of data) {
+    const item = document.createElement('div');
+    item.className = 'order';
+
+    const title = document.createElement('b');
+    title.textContent = order.cake_name + ' (' + order.cake_size + ')';
+
+    const detail = document.createElement('div');
+    detail.textContent =
+      'Jumlah: ' + order.quantity +
+      ' · Total: ' + rupiah(order.total_price);
+
+    const date = document.createElement('div');
+    date.textContent =
+      'Tanggal: ' + order.order_date +
+      ' · ' + order.delivery_method;
+
+    const status = document.createElement('span');
+    status.className = 'pill';
+    status.textContent = 'Status: ' + order.status;
+
+    item.append(title, detail, date, status);
+
+    if (order.notes) {
+      const note = document.createElement('div');
+      note.textContent = 'Catatan: ' + order.notes;
+      item.append(note);
+    }
+    $('ordersList').append(item);
+  }
+}
+
+$('refreshBtn').addEventListener('click', loadOrders);
+
+$('logoutBtn').addEventListener('click', async () => {
+  $('logoutBtn').disabled = true;
+  try {
+    const {error} = await supabase.auth.signOut();
+    if (error) throw error;
+    showAuth();
+    setMessage('message', 'Berhasil logout.');
+  } catch (error) {
+    setMessage('orderMessage', 'Logout gagal: ' + error.message);
+  } finally {
     $('logoutBtn').disabled = false;
   }
 });
 
 async function initialize() {
-  if (!setup()) return;
-
   try {
-    const { data, error } = await supabase.auth.getSession();
-
+    const {data, error} = await supabase.auth.getSession();
     if (error) throw error;
 
     if (data.session) {
-      showDashboard(data.session.user);
+      showShop(data.session.user);
     } else {
-      showLogin();
-      say('Supabase siap. Silakan login atau register.');
+      showAuth();
+      setMessage('message', 'Supabase siap. Silakan login atau register.');
     }
-  } catch (err) {
-    say('Gagal memeriksa sesi: ' + err.message);
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) showShop(session.user);
+      else showAuth();
+    });
+  } catch (error) {
+    setMessage('message', 'Gagal menghubungkan ke Supabase: ' + error.message);
   }
 }
 
