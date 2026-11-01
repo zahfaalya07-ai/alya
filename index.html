@@ -217,7 +217,13 @@ function updatePrice() {
   $('unitPrice').textContent = rupiah(unit);
   $('totalPrice').textContent = rupiah(unit * quantity);
 }
-
+const cakeImages = {
+  'Birthday Cake': 'images/birthday-cake.jpg',
+  'Chocolate Cake': 'images/chocolate-cake.jpg',
+  'Cheese Cake': 'images/cheese-cake.jpg',
+  'Red Velvet': 'images/red-velvet.jpg',
+  'Brownies': 'images/brownies.jpg'
+};
 function showShop(user) {
   currentUser = user;
   checkAdmin();
