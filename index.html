@@ -213,10 +213,16 @@ function setTodayMinimum() {
 
 function updatePrice() {
   const unit = prices[$('cake').value][$('size').value];
-  const quantity = Math.max(1, Math.min(20, Number($('quantity').value) || 1));
+  const quantity = Math.max(
+    1,
+    Math.min(20, Number($('quantity').value) || 1)
+  );
+
   $('unitPrice').textContent = rupiah(unit);
   $('totalPrice').textContent = rupiah(unit * quantity);
 }
+
+// FOTO KUE
 const cakeImages = {
   'Birthday Cake': 'images/birthday-cake.jpg',
   'Chocolate Cake': 'images/chocolate-cake.jpg',
@@ -224,15 +230,27 @@ const cakeImages = {
   'Red Velvet': 'images/red-velvet.jpg',
   'Brownies': 'images/brownies.jpg'
 };
+
+function updateCakeImage() {
+  const cake = $('cake').value;
+
+  $('cakeImage').src = cakeImages[cake];
+  $('cakeImage').alt = cake;
+  $('cakeImageName').textContent = cake;
+}
+
 function showShop(user) {
   currentUser = user;
   checkAdmin();
+
   $('auth').classList.add('hidden');
   $('shop').classList.remove('hidden');
   $('userEmail').textContent = user.email || '';
   $('customerName').value = user.user_metadata?.full_name || '';
+
   setTodayMinimum();
   updatePrice();
+  updateCakeImage();
   loadOrders();
 }
 async function checkAdmin() {
@@ -328,7 +346,10 @@ $('authForm').addEventListener('submit', async event => {
   }
 });
 
-$('cake').addEventListener('change', updatePrice);
+$('cake').addEventListener('change', () => {
+  updatePrice();
+  updateCakeImage();
+});
 $('size').addEventListener('change', updatePrice);
 $('quantity').addEventListener('input', updatePrice);
 
