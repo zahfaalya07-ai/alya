@@ -341,8 +341,18 @@ $('authForm').addEventListener('submit', async event => {
       }
     } else {
       const {data, error} = await supabase.auth.signInWithPassword({
-        email, password
-      });
+  email,
+  password
+});
+
+if (error) {
+  console.error('LOGIN ERROR:', error);
+  throw new Error(
+    error.message + ' | Status: ' + (error.status || 'Tidak diketahui')
+  );
+}
+
+showShop(data.user);
       if (error) throw error;
       showShop(data.user);
     }
